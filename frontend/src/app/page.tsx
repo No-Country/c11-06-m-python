@@ -1,9 +1,11 @@
-import Image from 'next/image'
+import React from "react";
 
-export default function Home() {
+const Home = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-[calc(100vh-7rem)] flex-col items-center justify-between p-24">
       Hola mundo
     </main>
-  )
-}
+  );
+};
+
+export default Home;
