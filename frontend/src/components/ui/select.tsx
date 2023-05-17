@@ -107,7 +107,7 @@ SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 const SelectUi = ({}: {}) => {
   return (
     <Select>
-      <SelectTrigger className="rounded-full bg-slate-300">
+      <SelectTrigger className="w-min rounded-full bg-slate-300">
         <SelectValue placeholder="ESP" />
       </SelectTrigger>
       <SelectContent>
