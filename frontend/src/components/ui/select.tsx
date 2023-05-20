@@ -104,10 +104,11 @@ const SelectSeparator = React.forwardRef<
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
+
 const SelectUi = ({}: {}) => {
   return (
     <Select>
-      <SelectTrigger className="w-min rounded-full bg-slate-300">
+      <SelectTrigger className="w-full rounded-full bg-slate-300">
         <SelectValue placeholder="ESP" />
       </SelectTrigger>
       <SelectContent>

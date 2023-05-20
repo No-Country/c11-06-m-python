@@ -30,7 +30,7 @@ export default function RootLayout({
         <header>
           <Navbar />
         </header>
-        <main className="pt-28 px-10 flex min-h-[calc(100vh-7rem)] flex-col items-center justify-between">{children}</main>
+        <main className="pt-28 w-screen px-10 min-h-screen grid grid-cols-12 gap-x-5 auto-rows-min">{children}</main>
       </body>
     </html>
   );
