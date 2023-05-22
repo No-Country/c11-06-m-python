@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.models.user_model import User
 from app.schemas.user_schema import UserDB, UserOut
 from app.core.db_conn import Base, engine
@@ -20,9 +20,12 @@ async def create_user(user: UserDB, db: Session = Depends(get_db)) -> UserDB:
                 hashed_pass=user.hashed_pass,
                 tipo_usuario=user.tipo_usuario,
                 estado=user.estado)
-    db.add(user)
-    db.commit(user)
-    db.refresh(user)
+    if user.email:
+        raise HTTPException(status_code=400, detail="El email ya se encuentra registrado")
+    else:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
 
     return user
 
