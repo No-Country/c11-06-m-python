@@ -13,7 +13,7 @@ export const Navbar = () => {
   const path = usePathname();
 
   return (
-    <nav className="h-28 w-screen px-10 fixed top-0 grid grid-cols-12 gap-5 auto-rows-min content-center">
+    <nav className="h-28 w-screen px-10 z-10 fixed top-0 grid grid-cols-12 gap-5 auto-rows-min content-center">
       {/* logo component */}
       <Link
         href={"/"}
