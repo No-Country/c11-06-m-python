@@ -1,25 +1,29 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, Union
 
-class UserDB(BaseModel):
+
+class OurBaseModel(BaseModel):
+    class Config:
+        orm_mode = True
+
+
+class UserDB(OurBaseModel):
     id: Optional[int]
     nombre: str
     apellido: str
     edad: int
     email: EmailStr
-    hashed_pass: str
-    tipo_usuario: str
-    estado: int = 0
+    password: str
+    tipo_usuario: Union[str, None] = None
+    estado: Union[int, None] = None
 
-    class Config:
-        orn_mode = True
+    
 
 
-class UserOut(BaseModel):
+class UserOut(OurBaseModel):
     nombre: str
     apellido: str
     edad: int
     email: EmailStr
 
-    class Config:
-        orn_mode = True
+  
