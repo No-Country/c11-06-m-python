@@ -1,7 +1,12 @@
 "use client"
 import { Input } from "@/components/ui/input";
+import { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
+
+export const metadata:Metadata = {
+  title: 'Crear cuenta'
+}
 
 const RegisterPage = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
