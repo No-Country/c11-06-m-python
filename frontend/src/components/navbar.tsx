@@ -24,14 +24,17 @@ export const Navbar = () => {
       </Link>
 
       {/* search */}
-      {path !== "/login" && path !== "/" && (
-        <Search className="w-auto col-span-4 col-start-4" />
-      )}
+
+      <Search
+        className={cn("w-auto col-span-4 col-start-4", {
+          hidden: ['/login', '/register', '/'].includes(path),
+        })}
+      />
 
       <div className="col-start-9 col-span-4 grid grid-cols-4 gap-5 content-center">
         {/* TODO: button - icon - component?  */}
 
-        {path === "/login" ? (
+        {path === "/login" || path === "/register" ? (
           <>
             <div className="px-4 py-1 h-10 col-span-2 flex items-center gap-2 bg-slate-300 rounded-full">
               <HelpCircle className="text-slate-600" />
@@ -55,10 +58,12 @@ export const Navbar = () => {
             {/* signup options */}
             {"authenticated" && (
               <div className="flex space-x-4 items-center">
-                <Link href={"/login"}>
+                <Link href={"/register"}>
                   <p className="w-max">Crear cuenta</p>
                 </Link>
-                <Link href={"/login"} className="col-span-2">
+                <Link
+                  href={"/login"}
+                  className="col-span-2">
                   <button className="w-52 h-10 bg-slate-300 rounded-full">
                     Iniciar sesión
                   </button>
@@ -67,7 +72,12 @@ export const Navbar = () => {
             )}
           </>
         )}
-        <div className={cn("w-full row-start-1 col-start-2",{'col-start-1': 'authenticated'}, {'col-start-2': path==='/login'})}>
+        <div
+          className={cn(
+            "w-full row-start-1 col-start-2",
+            { "col-start-1": "authenticated" },
+            { "col-start-2": path === "/login" || path === "/register" }
+          )}>
           <SelectUi />
         </div>
       </div>
