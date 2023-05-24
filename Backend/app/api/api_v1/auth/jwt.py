@@ -5,29 +5,36 @@ from typing import Union
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from app.schemas.user_schema import UserDB
+from app.api.api_v1.deps.user_deps import get_db
+from app.core.config import settings
 
-db = "DATABASE_URL"
+db = get_db()
 oauth2_scheme = OAuth2PasswordBearer("/token")
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") #Decodifica el password
 
-class UserInDB(UserDB):
-    hashed_password : str
+def catch_error_http():
+    return HTTPException(status_code=401, detail="No se puede validar la credencial", headers={"WWW-Authenticate": "Bearer"})
+error_http = catch_error_http()
 
-def get_user(db, username):
-    if username in db:
-        user_data = db[username]
-        return UserInDB(**user_data)
+#Verifica que el usuario exista en la base de datos, sino devuelve una lista vacia
+def get_user(db, email):
+    if email in db:
+        user_data = db[email]
+        return UserDB(**user_data)
     return []
 
+#Verifica que la contraseña plana que se le pasa sea igual a la encriptada en la base de datos. Devuelve valor booleano
 def verify_password(plane_password, hashed_password):
     return pwd_context.verify(plane_password, hashed_password)
 
-def authenticate_user(db, username, password):
-    user = get_user(db, username)
-    if not user or not verify_password(password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="No se pudo validar la credencial")
+#Autentifica usuario y contraseña, sino devuelve un error
+def authenticate_user(db, email, password):
+    user = get_user(db, email)
+    if not user or not verify_password(password, user.password):
+        raise error_http
     return user
 
+#Crea el token 
 def create_token(data: dict, time_expire: Union[datetime, None] = None):
     data_copy = data.copy()
     if time_expire is None:
@@ -35,17 +42,17 @@ def create_token(data: dict, time_expire: Union[datetime, None] = None):
     else:
         expires = datetime.utcnow() + time_expire
     data_copy.update({"exp": expires})
-    token_jwt = jwt.encode(data_copy, key="JWT_SECRET_KEY" , algorithm="ALGORITHM")
+    token_jwt = jwt.encode(data_copy, key=settings.JWT_SECRET_KEY , algorithm=settings.ALGORITHM)
     return token_jwt
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
-        token_decode = jwt.decode(token, key="JWT_SECRET_KEY", algorithms="ALGORITHM")
-        username = token_decode.get("sub")
-        if username == None:
-            raise HTTPException(status_code=401, detail="No se puede validar la credencial")
+        token_decode = jwt.decode(token, key=settings.JWT_SECRET_KEY, algorithms=settings.ALGORITHM)
+        email = token_decode.get("sub")
+        if email == None:
+            raise error_http
     except JWTError:
-        raise HTTPException(status_code=401, detail="No se puede validar la credencial")
-    user = get_user(db, username)
+        raise error_http
+    user = get_user(db, email)
     return user
 

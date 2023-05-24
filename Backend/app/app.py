@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Depends
 from app.core.config import settings
-from app.api.api_v1.auth.jwt import authenticate_user, create_token, db, oauth2_scheme
+from app.api.api_v1.auth.jwt import authenticate_user, create_token, db, get_current_user
 from datetime import timedelta
 from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.user_schema import UserDB
 
 from app.api.api_v1.handless.user import user_router 
 
@@ -15,17 +16,17 @@ async def app_init():
 
 @app.post("/token")
 def login(form_data: OAuth2PasswordRequestForm =Depends()):
-    user = authenticate_user(db, form_data.nombre, form_data.password)
-    acces_token_expires = timedelta(minutes=30)
-    acces_token_jwt = create_token({"sub": user.nombre}, acces_token_expires)
+    user = authenticate_user(db, form_data.email, form_data.password)
+    access_token_expires = timedelta(minutes=30)
+    access_token_jwt = create_token({"sub": user.email}, access_token_expires)
     return {
-        "acces_token": acces_token_jwt,
+        "access_token": access_token_jwt,
         "token_type": "bearer"
     }
 
 @app.get("users/me")
-def user(token: str = Depends(oauth2_scheme)):
-    return "I am an user"
+def user(user: UserDB = Depends(get_current_user)):
+    return user
 
 # Routers
 app.include_router(user_router, prefix="/user", tags=["users"])
