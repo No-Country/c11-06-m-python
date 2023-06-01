@@ -9,7 +9,7 @@ class User(Base):
     apellido = Column(String(25))
     edad = Column(Integer)
     email = Column(String(50))
-    hashed_pass = Column(String(255))  
+    password = Column(String(255))  
     tipo_usuario = Column(String(15))
     estado = Column(Integer)
 
