@@ -7,4 +7,4 @@ class TokenSchema(BaseModel):
 
 class TokenPayLoad(BaseModel):
     sub: str = None
-    exp: int = None
+    exp: float = None
